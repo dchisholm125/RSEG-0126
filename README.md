@@ -1,6 +1,6 @@
 # RSEG-0126
 
-This is Derek Chisholm's forked version of the RSEG-0126 repository!
+🎉🚀✨🔥🌟💎🦄🍀 This is Derek Chisholm's forked version of the RSEG-0126 repository! 🍀🦄💎🌟🔥✨🚀🎉
 
 Example GitHub repository
 
