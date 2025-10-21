@@ -1,41 +1,53 @@
-/*
-
- * Sieve.java: Sieve of Erastosthenes example, adapted from
- * https://www.tutorialspoint.com/Sieve-of-Eratosthenes-in-java
- * 
- */
-
 import java.util.Scanner;
 
-public class Sieve  {
-   public static void main(String args[]) {
-      Scanner sc = new Scanner(System.in);
-      System.out.println("Enter a number");
-      int num = sc.nextInt();
-      boolean[] bool = new boolean[num];
-     
-      for (int i = 0; i< bool.length; i++) {
-         bool[i] = true;
-      }
-      for (int i = 2; i< Math.sqrt(num); i++) {
-         if(bool[i] == true) {
-            for(int j = (i*i); j<num; j = j+i) {
-               bool[j] = false;
+public class Sieve {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int num = 0;
+
+        // prompt for input and validate
+        while (num < 1 || num > 100) {
+            System.out.println("Enter a number between 1 and 100:");
+            if (sc.hasNextInt()) {
+                num = sc.nextInt();
+                if (num < 1 || num > 100) {
+                    System.out.println("Number needs to be between 1 and 100.");
+                }
+            } else {
+                System.out.println("Number needs to be an integer.");
+                sc.next(); 
             }
-         }
-      }
-      System.out.println("List of prime numbers up to the given number are : ");
-      int nums = 0;
-      for (int i = 2; i< bool.length; i++) {
-            if(bool[i]==true) {
-               System.out.print(i + "\t");
-               nums++;
-               if (nums == 10) {
-                  System.out.println();
-                  nums = 0;
+        }
+
+        // initialize the sieve array
+        boolean[] bool = new boolean[num + 1];
+        for (int i = 2; i <= num; i++) {
+            bool[i] = true;
+        }
+
+        // perform the Sieve of Eratosthenes algorithm
+        for (int p = 2; p * p <= num; p++) { // loop through numbers up to the square root of 'num'
+            if (bool[p]) { // only mark false if 'p' is still true 
+                for (int i = p * p; i <= num; i += p) { // Mark all multiples of 'p' starting from p^2 as false
+                    bool[i] = false; // Mark 'i' as not prime
+                }
             }
-         }
-      }
-      sc.close();
-   }
+        }
+
+        // print prime numbers
+        System.out.println("List of prime numbers up to " + num + ":");
+        int count = 0;
+        for (int i = 2; i <= num; i++) {
+            if (bool[i]) {
+                System.out.print(i + " ");
+                count++;
+                if (count % 10 == 0) {
+                    System.out.println();
+                }
+            }
+        }
+        System.out.println();
+
+        sc.close();
+    }
 }
