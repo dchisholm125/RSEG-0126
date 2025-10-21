@@ -4,25 +4,25 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build -t sieve-docker .'
+                sh 'sudo docker build -t sieve-docker .'
             }
         }
 
         stage('Test 1') {
             steps {
-                sh 'echo "1" | docker run --rm -i sieve-docker'
+                sh 'echo "1" | sudo docker run --rm -i sieve-docker'
             }
         }
 
         stage('Test 100') {
             steps {
-                sh 'echo "100" | docker run --rm -i sieve-docker'
+                sh 'echo "100" | sudo docker run --rm -i sieve-docker'
             }
         }
 
         stage('Test 84') {
             steps {
-                sh 'echo "84" | docker run --rm -i sieve-docker'
+                sh 'echo "84" | sudo docker run --rm -i sieve-docker'
             }
         }
 
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'echo "a" | docker run --rm -i sieve-docker'
+                        sh 'echo "a" | sudo docker run --rm -i sieve-docker'
                     } catch (Exception e) {
                         echo "Test failed as expected for invalid input 'a'"
                     }
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'echo "-1" | docker run --rm -i sieve-docker'
+                        sh 'echo "-1" | sudo docker run --rm -i sieve-docker'
                     } catch (Exception e) {
                         echo "Test failed as expected for invalid input -1"
                     }
@@ -52,7 +52,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                sh 'docker tag sieve-docker sieve-docker:latest'
+                sh 'sudo docker tag sieve-docker sieve-docker:latest'
                 // Add push to registry if needed, e.g., sh 'docker push sieve-docker:latest'
             }
         }
