@@ -1,0 +1,169 @@
+Started by user Derek
+Connecting to https://api.github.com with no credentials, anonymous access
+Obtained Jenkinsfile from 8933b6357d94adaf00ef5b65f5642cb0a3c0fa45
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/RSEG-0126_master
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/RSEG-0126_master/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/dchisholm125/RSEG-0126.git # timeout=10
+Fetching without tags
+Fetching upstream changes from https://github.com/dchisholm125/RSEG-0126.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+ > git fetch --no-tags --force --progress -- https://github.com/dchisholm125/RSEG-0126.git +refs/heads/master:refs/remotes/origin/master # timeout=10
+Checking out Revision 8933b6357d94adaf00ef5b65f5642cb0a3c0fa45 (master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 8933b6357d94adaf00ef5b65f5642cb0a3c0fa45 # timeout=10
+Commit message: "Change from sudo"
+ > git rev-list --no-walk 3a823c74647edeeab7a75f3c62a73d87e76f98fa # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] sh
++ docker build -t sieve-docker .
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.48kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/eclipse-temurin:17-jdk-focal
+#2 DONE 0.1s
+
+#3 [internal] load metadata for gcr.io/distroless/java17-debian11:latest
+#3 DONE 0.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [build 1/4] FROM docker.io/library/eclipse-temurin:17-jdk-focal@sha256:5751a59a993d1011047d52df2b56a961a328596d75f6bea23c68b6647490db20
+#5 DONE 0.0s
+
+#6 [run 1/3] FROM gcr.io/distroless/java17-debian11:latest@sha256:b7caa7280b8a0f227e0b2c16dde1a9abddfeedbaef97ce68ac349310d1d589be
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 1.79kB done
+#7 DONE 0.0s
+
+#8 [build 2/4] WORKDIR /app
+#8 CACHED
+
+#9 [build 3/4] COPY ./sieve/Sieve.java .
+#9 DONE 0.1s
+
+#10 [build 4/4] RUN javac Sieve.java
+#10 DONE 1.8s
+
+#11 [run 2/3] WORKDIR /app
+#11 CACHED
+
+#12 [run 3/3] COPY --from=build /app/Sieve.class .
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 writing image sha256:5366b1688bbe8a210c22dcbd588d33a0a96c2bc444a3c079b0bfdd92c1f6d1bb done
+#13 naming to docker.io/library/sieve-docker done
+#13 DONE 0.0s
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test 1)
+[Pipeline] sh
++ echo 1
++ docker run --rm -i sieve-docker
+Enter a number between 1 and 100:
+List of prime numbers up to 1:
+
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test 100)
+[Pipeline] sh
++ echo 100
++ docker run --rm -i sieve-docker
+Enter a number between 1 and 100:
+List of prime numbers up to 100:
+2 3 5 7 11 13 17 19 23 29 
+31 37 41 43 47 53 59 61 67 71 
+73 79 83 89 97 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test 84)
+[Pipeline] sh
++ echo 84
++ docker run --rm -i sieve-docker
+Enter a number between 1 and 100:
+List of prime numbers up to 84:
+2 3 5 7 11 13 17 19 23 29 
+31 37 41 43 47 53 59 61 67 71 
+73 79 83 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test a)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ docker run --rm -i sieve-docker
++ echo a
+Enter a number between 1 and 100:
+Number needs to be an integer.
+Enter a number between 1 and 100:
+Number needs to be an integer.
+Exception in thread "main" java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1478)
+	at Sieve.main(Sieve.java:18)
+[Pipeline] echo
+Test failed as expected for invalid input 'a'
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test -1)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ echo -1
++ docker run --rm -i sieve-docker
+Enter a number between 1 and 100:
+Number needs to be between 1 and 100.
+Enter a number between 1 and 100:
+Number needs to be an integer.
+Exception in thread "main" java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1478)
+	at Sieve.main(Sieve.java:18)
+[Pipeline] echo
+Test failed as expected for invalid input -1
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Package)
+[Pipeline] sh
++ docker tag sieve-docker sieve-docker:latest
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
